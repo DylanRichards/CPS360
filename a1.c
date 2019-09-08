@@ -1,6 +1,6 @@
 /*
 	Name: Dylan Richards,		Class: CPS360
-	Section: 22371837,			Assignment: 01
+	Section: 22371837,		Assignment: 01
 	Due: September 11, 2019		Started: September 4, 2019
 	Credit: 10 points
 
