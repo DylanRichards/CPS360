@@ -1,7 +1,7 @@
 /*
 	Name: Dylan Richards,		Class: CPS360
 	Section: 22371837,		Assignment: 02
-	Due: September 20, 2019		Started: September 12, 2019
+	Due: September 23, 2019		Started: September 12, 2019
 	Credit: 10 points
 
 	Problem:
@@ -12,7 +12,7 @@
 
 	Accessing functions for the data structure:
 
-	Errors handled: None.
+	Errors handled: Command line arguments handled. If no arguments are specified, the program closes.
 
 	Limitations:
 
@@ -32,28 +32,65 @@ typedef struct lnode lnode;
 /*
 */
 int main(int argc, char *argv[]){
-	void usage(char *progname);
-	int nextnum();
-	
-	int repeatcount;
-	if(argc == 2){
-		repeatcount = atoi(argv[1]);
-	} else {
-		usage("a2"); 	
+	if(argc < 2){
+		void usage(char *progname);
+		usage(argv[0]);
 	}
+	
+	int repeatcount = atoi(argv[1]);
 
 	srand(time(0));
 	
+	void getnode(lnode **ptr);
+
+	lnode eventemp, *evenptr, **levens;
+	evenptr = &eventemp;
+	levens = &evenptr;
+	
+	lnode oddtemp, *oddptr, **lodds;
+	oddptr = &oddtemp;
+	lodds = &oddptr;
+
 	int i;
 	for(i = 0; i < repeatcount; i++){
+		int nextnum();
 		int num = nextnum();
 
 		if(num & 1){
+			/* Search List */
+
 			printf("Odd: %d\n", num);
-		} else {	
+			getnode(lodds);
+			
+			oddptr -> value = num;
+
+			printf("lodds: %p \t oddptr: %p \n", lodds, oddptr);
+		
+		} else {
+			/* Search List */
 			printf("Even: %d\n", num);
+			getnode(levens);
+
+			lnode newtemp = **levens;
+			newtemp.value = num;
+
+			printf("levens: %p \t evenptr: %p \t newtemp:%p \n", levens, evenptr, &newtemp);
 		}
 	}
+	
+	if(*levens == NULL){
+		printf("Error");
+		exit(1);
+	}
+
+
+	void printlist(lnode *list);
+	printlist(*levens);
+	printlist(*lodds);
+
+	void freelist(lnode **list);
+	freelist(levens);
+	freelist(lodds);
 
 	exit(0);
 }
@@ -61,14 +98,14 @@ int main(int argc, char *argv[]){
 /*	Prints usage to stderr and terminates
 */
 void usage(char *progname){
-	fprintf(stderr, "./%s <rep-count>\n", progname);
+	fprintf(stderr, "%s <rep-count>\n", progname);
 	exit(1);
 }
 
 /*	Generates the next number
 */
 int nextnum(){
-	return (rand() % RANGE);
+	return (rand() % RANGE) + 1;
 }
 
 /*	Gets a node for list using malloc(). The caller should check for call failure.
@@ -110,7 +147,17 @@ int delfromlist(lnode **list, lnode *after);
 
 /*	Prints the contents of given list (on one line on stdout)
 */
-void printlist(lnode *list);
+void printlist(lnode *list){
+	int i;
+
+	printf("Data: %d", list -> value);
+	for(i = 0; list -> next != NULL; i++){
+		list = list -> next;
+		printf(", %d", list -> value);
+	}
+
+	printf("\n");
+}
 
 /*	Returns the node storage to system for nodes in the list, one node at a time.
 	Calls freenode(). Returns empty list to caller.
