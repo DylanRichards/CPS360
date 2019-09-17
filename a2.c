@@ -41,14 +41,14 @@ int main(int argc, char *argv[]){
 
 	srand(time(0));
 	
-	int insertinlist(lnode **list, int x);
-
 	lnode *evenptr, **levens;
 	levens = &evenptr;
 	
 	lnode *oddptr, **lodds;
 	lodds = &oddptr;
 
+	int insertinlist(lnode **list, int x);
+	
 	int i;
 	for(i = 0; i < repeatcount; i++){
 		int nextnum();
@@ -57,30 +57,22 @@ int main(int argc, char *argv[]){
 		if(num & 1){
 			printf("Odd: %d\n", num);
 			if(!insertinlist(lodds, num)) printf("ERROR Inserting");
-
 		} else {
 			printf("Even: %d\n", num);	
 			if(!insertinlist(levens, num)) printf("ERROR Inserting");
-
 		}
 	}
 	
-	if(*levens == NULL){
-		printf("Error");
-		exit(1);
-	}
-
-
 	void printlist(lnode *list);
-	printf("Evens: ");
-	printlist(*levens);
-	printf("Odds: ");
+	printf("odd-list: ");
 	printlist(*lodds);
-
+	printf("even-list: ");
+	printlist(*levens);
+	
 	void freelist(lnode **list);
 	freelist(levens);
 	freelist(lodds);
-
+	
 	exit(0);
 }
 
@@ -131,15 +123,15 @@ int insertinlist(lnode **list, int x){
 	void search(lnode *list, lnode **crnt, lnode **pred, int x);
 	
 	lnode *prev = *list;
-	void getnode(lnode **ptr);
 	
+	void getnode(lnode **ptr);
 	getnode(list);
-		
+	
 	if(*list == NULL) return 0;
 
 	(*list) -> value = x;
 	(*list) -> next = prev;
-
+	
 	return 1;
 }
 
@@ -151,10 +143,14 @@ int delfromlist(lnode **list, lnode *after);
 /*	Prints the contents of given list (on one line on stdout)
 */
 void printlist(lnode *list){
-	int i;
+	if(list == NULL){
+		printf("empty\n");
+		return;
+	}
 
 	printf("%d", list -> value);
-	for(i = 0; list -> next != NULL; i++){
+	
+	while(list -> next != NULL){
 		list = list -> next;
 		printf(", %d", list -> value);
 	}
