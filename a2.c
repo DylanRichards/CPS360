@@ -41,14 +41,12 @@ int main(int argc, char *argv[]){
 
 	srand(time(0));
 	
-	void getnode(lnode **ptr);
+	int insertinlist(lnode **list, int x);
 
-	lnode eventemp, *evenptr, **levens;
-	evenptr = &eventemp;
+	lnode *evenptr, **levens;
 	levens = &evenptr;
 	
-	lnode oddtemp, *oddptr, **lodds;
-	oddptr = &oddtemp;
+	lnode *oddptr, **lodds;
 	lodds = &oddptr;
 
 	int i;
@@ -57,24 +55,13 @@ int main(int argc, char *argv[]){
 		int num = nextnum();
 
 		if(num & 1){
-			/* Search List */
-
 			printf("Odd: %d\n", num);
-			getnode(lodds);
-			
-			oddptr -> value = num;
+			if(!insertinlist(lodds, num)) printf("ERROR Inserting");
 
-			printf("lodds: %p \t oddptr: %p \n", lodds, oddptr);
-		
 		} else {
-			/* Search List */
-			printf("Even: %d\n", num);
-			getnode(levens);
+			printf("Even: %d\n", num);	
+			if(!insertinlist(levens, num)) printf("ERROR Inserting");
 
-			lnode newtemp = **levens;
-			newtemp.value = num;
-
-			printf("levens: %p \t evenptr: %p \t newtemp:%p \n", levens, evenptr, &newtemp);
 		}
 	}
 	
@@ -85,7 +72,9 @@ int main(int argc, char *argv[]){
 
 
 	void printlist(lnode *list);
+	printf("Evens: ");
 	printlist(*levens);
+	printf("Odds: ");
 	printlist(*lodds);
 
 	void freelist(lnode **list);
@@ -136,9 +125,23 @@ void search(lnode *list, lnode **crnt, lnode **pred, int x){
 }
 
 /*	Inserts x at the front of list if found in list, deletes it from the list otherwise.
- *	Returns 1 on success, 0 otherwise, calls search()
+	Returns 1 on success, 0 otherwise, calls search()
 */
-int insertinlist(lnode **list, int x);
+int insertinlist(lnode **list, int x){
+	void search(lnode *list, lnode **crnt, lnode **pred, int x);
+	
+	lnode *prev = *list;
+	void getnode(lnode **ptr);
+	
+	getnode(list);
+		
+	if(*list == NULL) return 0;
+
+	(*list) -> value = x;
+	(*list) -> next = prev;
+
+	return 1;
+}
 
 /*	Deletes the node from list that is successor of the node pointed by after.
 	Returns 1 on success, 0 otherwise.
@@ -150,7 +153,7 @@ int delfromlist(lnode **list, lnode *after);
 void printlist(lnode *list){
 	int i;
 
-	printf("Data: %d", list -> value);
+	printf("%d", list -> value);
 	for(i = 0; list -> next != NULL; i++){
 		list = list -> next;
 		printf(", %d", list -> value);
