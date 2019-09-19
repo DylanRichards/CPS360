@@ -43,41 +43,41 @@ int main(int argc, char *argv[]){
 		void usage(char *progname);
 		usage(argv[0]);
 	}
-	
+
 	int repeatcount = atoi(argv[1]);
 
 	srand(time(0));
-	
+
 	lnode *evenptr, **levens;
 	levens = &evenptr;
-	
+
 	lnode *oddptr, **lodds;
 	lodds = &oddptr;
 
 	int insertinlist(lnode **list, int x);
-	
+
 	int i;
 	for(i = 0; i < repeatcount; i++){
 		int nextnum();
 		int num = nextnum();
 
 		if(num & 1){
-			if(!insertinlist(lodds, num)) printf("ERROR Inserting");
+			if(!insertinlist(lodds, num)) printf("ERROR Inserting\n");
 		} else {
-			if(!insertinlist(levens, num)) printf("ERROR Inserting");
+			if(!insertinlist(levens, num)) printf("ERROR Inserting\n");
 		}
 	}
-	
+
 	void printlist(lnode *list);
 	printf("odd-list: ");
 	printlist(*lodds);
 	printf("even-list: ");
 	printlist(*levens);
-	
+
 	void freelist(lnode **list);
 	freelist(levens);
 	freelist(lodds);
-	
+
 	exit(0);
 }
 
@@ -142,13 +142,13 @@ int insertinlist(lnode **list, int x){
 	} else {
 		void getnode(lnode **ptr);
 		getnode(list);
-	
+
 		if(!(*list)) return 0;
 
 		(*list) -> value = x;
 		(*list) -> next = prev;
 	}
-	
+
 	return 1;
 }
 
@@ -156,7 +156,9 @@ int insertinlist(lnode **list, int x){
 	Returns 1 on success, 0 otherwise.
 */
 int delfromlist(lnode **list, lnode *after){
-	lnode *deletenode;	
+	if(!*list) return 0;
+
+	lnode *deletenode;
 
 	if(!after){
 		deletenode = *list;
