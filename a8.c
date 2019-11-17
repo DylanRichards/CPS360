@@ -44,15 +44,11 @@ int main(int argc, char *argv[]){
 	void printrslts(char *label);
 	
 	checkargs(argc, argv);
-
 	initcache();
 	srand(time(0));
-
-	char policy;
-	policy = strcmp(argv[1], "fifo");
+	char policy = strcmp(argv[1], "fifo");
 
 	processreffile(policy);
-
 	printrslts(policy ? "Random:" : "Fifo:");
 
 	exit(0);
@@ -145,31 +141,48 @@ int fillemptyline(cache *line, int index){
 
 /*	Random between 0 and 3.
 */
-void randomalgo(cache *line, unsigned int ref){
-	int idx = getindex(ref);
+void randomalgo(cache *line, int index){
+	int victim = rand() % 4 + index;
+	l1[victim] = *line;
+}
 
-	line->valid = 1;
-	if(fillemptyline(line, idx)) return;
+/*
+*/
+void fifoalgo(cache *line, int index){
+	int max = 0, victim = 0;
 
-	int rnd = rand() % 4;
-	l1[idx + rnd] = *line;
+	int i;
+	for(i = index; i < index + 4; i++){
+		if(l1[i].age > max){
+			max = l1[i].age;
+			victim = i;
+		}
+		l1[i].age++;
+	}
+
+	l1[victim] = *line;
 }
 
 /*
 */
 void processreffile(char policy){
-	int nextref;
+	unsigned int nextref;
 	while(scanf("%x", &nextref) != EOF){
 		reference++;
 		if(isamiss(nextref)){
 			miss++;
 
 			cache line = {
+				.valid = 1,
 				.tag = gettag(nextref)
 			};
 			
-			if(policy) randomalgo(&line, nextref);
-			else printf("FIFO:");
+			int idx = getindex(nextref);
+			
+			if(fillemptyline(&line, idx)) continue;
+			
+			if(policy) randomalgo(&line, idx);
+			else fifoalgo(&line, idx);
 		}
 	}
 }
